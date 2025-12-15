@@ -1,14 +1,11 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+"use client";
+
+import { SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
+import { Authenticated, Unauthenticated } from "convex/react";
 
 const Header = () => {
   return (
@@ -26,14 +23,14 @@ const Header = () => {
             />
           </Link>
           <div className="flex items-center">
-            <SignedOut>
+            <Authenticated>
+              <UserButton />
+            </Authenticated>
+            <Unauthenticated>
               <SignInButton mode="modal">
                 <Button size="sm">Sign In</Button>
               </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            </Unauthenticated>
           </div>
         </div>
       </nav>
