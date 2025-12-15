@@ -1,6 +1,14 @@
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Button } from "./ui/button";
 
 const Header = () => {
   return (
@@ -11,12 +19,22 @@ const Header = () => {
             <Image
               src="/spott.png"
               alt="Spott Logo"
-              width={100}
-              height={100}
-              classname="w-full h-11"
+              width={500}
+              height={500}
+              className="w-full h-11"
               priority
             />
           </Link>
+          <div className="flex items-center">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button size="sm">Sign In</Button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
       </nav>
     </>
