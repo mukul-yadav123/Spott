@@ -52,6 +52,43 @@ export const getEventsByLocation = query({
             )
         }
 
+        // Get current user's interests to personalize sorting
+        const identity = await ctx.auth.getUserIdentity();
+        let userInterests = [];
+
+        if (identity) {
+            const user = await ctx.db
+                .query("users")
+                .withIndex("by_token", (q) =>
+                    q.eq("tokenIdentifier", identity.tokenIdentifier)
+                )
+                .unique();
+
+            if (user?.interests) {
+                userInterests = user.interests;
+            }
+        }
+
+        // Sort events based on user interests
+        if (userInterests.length > 0) {
+            events.sort((a, b) => {
+                const aInInterests = userInterests.includes(a.category);
+                const bInInterests = userInterests.includes(b.category);
+
+                // If both are in interests or both are not, maintain date order
+                if (aInInterests === bInInterests) {
+                    // If both are in interests, sort by interest order
+                    if (aInInterests) {
+                        return userInterests.indexOf(a.category) - userInterests.indexOf(b.category);
+                    }
+                    return 0;
+                }
+
+                // Events matching user interests come first
+                return aInInterests ? -1 : 1;
+            });
+        }
+
         return events.slice(0,args.limit ?? 4)
     }
 })
@@ -73,6 +110,43 @@ export const getPopularEvents = query({
         const popular = events
         .sort((a,b) => b.registrationCount - a.registrationCount)
         .slice(0,args.limit ?? 6);
+
+        // Get current user's interests to personalize sorting
+        const identity = await ctx.auth.getUserIdentity();
+        let userInterests = [];
+
+        if (identity) {
+            const user = await ctx.db
+                .query("users")
+                .withIndex("by_token", (q) =>
+                    q.eq("tokenIdentifier", identity.tokenIdentifier)
+                )
+                .unique();
+
+            if (user?.interests) {
+                userInterests = user.interests;
+            }
+        }
+
+        // Sort events based on user interests
+        if (userInterests.length > 0) {
+            popular.sort((a, b) => {
+                const aInInterests = userInterests.includes(a.category);
+                const bInInterests = userInterests.includes(b.category);
+
+                // If both are in interests or both are not, maintain date order
+                if (aInInterests === bInInterests) {
+                    // If both are in interests, sort by interest order
+                    if (aInInterests) {
+                        return userInterests.indexOf(a.category) - userInterests.indexOf(b.category);
+                    }
+                    return 0;
+                }
+
+                // Events matching user interests come first
+                return aInInterests ? -1 : 1;
+            });
+        }
 
         return popular
 
