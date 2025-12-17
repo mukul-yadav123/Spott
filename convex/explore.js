@@ -35,7 +35,7 @@ export const getEventsByLocation = query({
     handler: async(ctx,args) => {
         const now = Date.now();
 
-        const events = await ctx.db.query("events")
+        let events = await ctx.db.query("events")
         .withIndex("by_start_date")
         .filter((q) => q.gte(q.field("startDate"),now))
         .collect();
