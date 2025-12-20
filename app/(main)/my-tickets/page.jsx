@@ -19,14 +19,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Link from "next/link";
-import EventCard from "@/components/event-card";
+import EventCard from "@/components/EventCard";
 
 export default function MyTicketsPage() {
   const router = useRouter();
   const [selectedTicket, setSelectedTicket] = useState(null);
 
   const { data: registrations, isLoading } = useConvexQuery(
-    api.registrations.getMyRegistrations
+    api.registration.getMyRegistrations
   );
 
   const { mutate: cancelRegistration, isLoading: isCancelling } =
